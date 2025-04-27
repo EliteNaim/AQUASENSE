@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->fetch();
         if (password_verify($password, $hashed_password)) {
             // Redirect to the profile page after successful login
-            header("Location: profile.php");
+            header("Location: index.html");
             exit();
         } else {
             echo "Incorrect password!";
