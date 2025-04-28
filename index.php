@@ -43,15 +43,26 @@
 
         <!-- Signup and Login Buttons -->
         <div class="flex space-x-4">
-            <a href="register.html" class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-500 transition duration-300">Sign Up</a>
-            <a href="login.html" class="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-800 transition duration-300">Login</a>
+            <?php if (isset($_SESSION['user_name'])): ?>
+                <!-- User is logged in -->
+                <div class="flex items-center space-x-2">
+                    <span class="text-white font-semibold"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+                    <a href="logout.php" class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-red-600 transition duration-300">Logout</a>
+                </div>
+            <?php else: ?>
+                <!-- User is not logged in -->
+                <a href="register.html" class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-500 transition duration-300">Sign Up</a>
+                <a href="login.html" class="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-800 transition duration-300">Login</a>
+            <?php endif; ?>
+        
             <div class="flex space-x-3">
-          <a href="https://www.facebook.com/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-facebook"></i></a>
-          <a href="https://twitter.com/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-twitter"></i></a>
-          <a href="https://www.linkedin.com/company/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-linkedin"></i></a>
-          <a href="https://www.instagram.com/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-facebook"></i></a>
+                <a href="https://twitter.com/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/company/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-linkedin"></i></a>
+                <a href="https://www.instagram.com/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
+
         </div>
     </div>
 </header>
