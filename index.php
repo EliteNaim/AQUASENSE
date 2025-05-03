@@ -19,15 +19,15 @@
 
 <!-- Header Section with Contact and Social Links -->
 <header class="bg-[var(--logo-gradient)] text-lightblue py-6"></header>
-    <div class="container mx-auto flex justify-between items-center px-6">
-        <!-- Logo and Navigation -->
-        <div class="logo flex items-center">
-            <img src="AQUASENSE LOGO.png" alt="Aqua Sense Logo" class="w-16 h-16">
-            <div class="ml-4">
-                <h1 class="text-3xl font-bold">Aqua Sense</h1>
-                <p class="text-sm">Healthy Water, Healthy Fish</p>
-            </div>
-        </div>
+  <div class="container mx-auto flex justify-between items-center px-6">
+    <!-- Logo and Navigation -->
+    <div class="logo flex items-center">
+      <img src="images/AQUASENSE LOGO.png" alt="Aqua Sense Logo" class="w-32 h-32 mb-4"> <!-- Added margin-bottom to lift the logo -->
+      <div class="ml-4">
+        <h1 class="text-3xl font-bold">Aqua Sense</h1>
+        <p class="text-sm">Healthy Water, Healthy Fish</p>
+      </div>
+    </div>
 
         <!-- Main Navigation -->
         <nav>
@@ -43,25 +43,27 @@
 
         <!-- Signup and Login Buttons -->
         <div class="flex space-x-4">
-            <?php if (isset($_SESSION['user_name'])): ?>
-                <!-- User is logged in -->
-                <div class="flex items-center space-x-2">
-                    <span class="text-white font-semibold"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
-                    <a href="logout.php" class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-red-600 transition duration-300">Logout</a>
-                </div>
-            <?php else: ?>
-                <!-- User is not logged in -->
-                <a href="register.html" class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-500 transition duration-300">Sign Up</a>
-                <a href="login.html" class="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-800 transition duration-300">Login</a>
-            <?php endif; ?>
-        
-            <div class="flex space-x-3">
-                <a href="https://www.facebook.com/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-facebook"></i></a>
-                <a href="https://twitter.com/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-twitter"></i></a>
-                <a href="https://www.linkedin.com/company/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-linkedin"></i></a>
-                <a href="https://www.instagram.com/aquasense" class="hover:text-blue-800 text-lightblue"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
+    <?php
+    session_start(); // Start the session at the beginning of your file if not already done
+
+    if (isset($_SESSION['name'])) {
+        // User is logged in
+        $username = htmlspecialchars($_SESSION['name']); // To prevent XSS
+        echo '
+        <div class="flex items-center space-x-4">
+            <span class="text-blue-900 font-semibold">' . $username . '</span>
+            <a href="logout.php" class="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-800 transition duration-300">Logout</a>
+        </div>';
+    } else {
+        // User is not logged in
+        echo '
+        <div class="flex items-center space-x-4">
+            <a href="register.html" class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-500 transition duration-300">Sign Up</a>
+            <a href="login.html" class="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-800 transition duration-300">Login</a>
+        </div>';
+    }
+    ?>
+</div>
 
         </div>
     </div>
@@ -72,7 +74,7 @@
     <div class="container mx-auto text-center">
       <h2 class="text-5xl font-bold mb-4">Revolutionizing Sustainable Aquaculture</h2>
       <p class="text-xl mb-8">Helping fish farmers achieve optimal growth and sustainability using real-time data and intelligent insights.</p>
-      <a href="#contact" class="bg-yellow-400 text-blue-900 px-6 py-3 rounded-lg text-lg font-semibold hover:bg-yellow-500 transition duration-300">Get In Touch</a>
+      <a href="<?php echo isset($_SESSION['name']) ? 'pond.php' : 'login.html'; ?>" class="bg-yellow-400 text-blue-900 px-6 py-3 rounded-lg text-lg font-semibold hover:bg-yellow-500 transition duration-300">Get In Touch</a>
     </div>
   </section>
 

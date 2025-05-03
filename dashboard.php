@@ -1,9 +1,19 @@
+<?php
+session_start(); // Start the session
+
+// Check if the user is logged in
+if (!isset($_SESSION['username'])) {
+    header("Location: login.html"); // Redirect to login page if not logged in
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - AquaSense</title>
+    <title>Dashboard - AquaSense</title>
     <style>
         /* Global Styles */
         body {
@@ -11,11 +21,6 @@
             background: linear-gradient(to right, #00aaff, #aaffcc);
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
         }
 
         /* Header Styling */
@@ -25,8 +30,6 @@
             text-align: center;
             padding: 40px 20px;
             width: 100%;
-            position: absolute;
-            top: 0;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -36,22 +39,16 @@
             font-weight: bold;
         }
 
-        header p {
-            font-size: 18px;
-            margin-top: 10px;
-            font-style: italic;
-        }
-
-        /* Form Container Styling */
+        /* Dashboard Content Styling */
         .container {
             width: 100%;
-            max-width: 400px;
+            max-width: 800px;
             background-color: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             box-sizing: border-box;
-            margin-top: 100px;
+            margin: 50px auto;
         }
 
         h2 {
@@ -61,36 +58,27 @@
             margin-bottom: 20px;
         }
 
-        label {
-            font-size: 14px;
-            margin: 10px 0 5px;
-            display: block;
-            color: #333;
+        .user-info {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
         }
 
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            box-sizing: border-box;
-            font-size: 14px;
+        .user-info p {
+            margin: 5px 0;
         }
 
-        input[type="text"]:focus, input[type="password"]:focus {
-            border-color: #007BFF;
-            outline: none;
+        .button-container {
+            text-align: center;
         }
 
         button {
-            width: 100%;
-            padding: 12px;
+            padding: 12px 20px;
             background-color: #007BFF;
             color: white;
-            border: none;
             font-size: 16px;
             font-weight: bold;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -122,46 +110,35 @@
             color: #ffcc00;
         }
 
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
-                width: 90%;
-                margin-top: 120px;
-            }
-
-            header h1 {
-                font-size: 28px;
-            }
-
-            header p {
-                font-size: 16px;
-            }
-
-            button {
-                font-size: 14px;
-            }
-        }
     </style>
 </head>
 <body>
+
     <!-- Header -->
     <header>
-        <h1>AquaSense</h1>
-        <p>Empowering the Future of Sustainable Water Solutions</p>
+        <h1>Welcome to AquaSense, <?php echo $_SESSION['username']; ?>!</h1>
+        <p>Your trusted partner in sustainable aquaculture</p>
     </header>
 
-    <!-- Login Form -->
+    <!-- Dashboard Content -->
     <div class="container">
-        <h2>Login</h2>
-        <form action="login_user.php" method="POST">
-            <label for="mobile">Mobile Number:</label>
-            <input type="text" id="mobile" name="mobile" required>
+        <h2>Your Dashboard</h2>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+        <div class="user-info">
+            <p><strong>Username:</strong> <?php echo $_SESSION['username']; ?></p>
+            <p><strong>Mobile Number:</strong> <?php echo $_SESSION['mobile']; ?></p>
+        </div>
 
-            <button type="submit">Login</button>
+        <!-- Content area where the user can manage their ponds and other details -->
+        <div class="button-container">
+            <button onclick="window.location.href='manage_ponds.php'">Manage Your Ponds</button>
+        </div>
+    </div>
+
+    <!-- Logout Button -->
+    <div class="button-container">
+        <form action="logout.php" method="POST">
+            <button type="submit">Logout</button>
         </form>
     </div>
 
@@ -170,5 +147,6 @@
         <p>&copy; 2025 AquaSense</p>
         <p><a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a></p>
     </footer>
+
 </body>
 </html>

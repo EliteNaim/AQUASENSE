@@ -1,11 +1,16 @@
 <?php
-// Database connection details
-$servername = "localhost"; // Replace with your MySQL server details
-$username = "root";        // Replace with your MySQL username
-$password = "";            // Replace with your MySQL password
-$dbname = "Aquasense";     // Replace with your database name
+// Show errors for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Create connection
+// DB connection info
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "Aquasense";
+
+// Connect
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
@@ -13,34 +18,46 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Check if the form is submitted
+// Only handle POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the form input
-    $name = $_POST['name'];
-    $mobile = $_POST['mobile'];
+    // Get input
+    $name = trim($_POST['name']);
+    $mobile = trim($_POST['mobile']);
     $password = $_POST['password'];
-    $gender = $_POST['gender'];
+    $gender = trim($_POST['gender']);
 
-    // Hash the password for security
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-    // Prepare and bind the statement
-    $stmt = $conn->prepare("INSERT INTO users (name, mobile, password, gender) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $name, $mobile, $hashed_password, $gender); // 'ssss' indicates four string parameters
-
-    // Execute the query
-    if ($stmt->execute()) {
-        // Redirect to login page after successful registration
-        header("Location: login.html");
+    // Basic validation
+    if (empty($name) || empty($mobile) || empty($password) || empty($gender)) {
+        echo "All fields are required.";
         exit();
-    } else {
-        echo "Error: " . $stmt->error;
     }
 
-    // Close the prepared statement
+    // Check if mobile already exists
+    $stmt = $conn->prepare("SELECT * FROM users WHERE mobile = ?");
+    $stmt->bind_param("s", $mobile);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        echo "This mobile number is already registered. Please login.";
+    } else {
+        // Encrypt password
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        // Insert new user
+        $stmt = $conn->prepare("INSERT INTO users (name, mobile, password, gender) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $name, $mobile, $hashedPassword, $gender);
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Registration successful! Redirecting to login...'); window.location.href='login.html';</script>";
+            exit();
+        } else {
+            echo "Error inserting data: " . $stmt->error;
+        }
+    }
+
     $stmt->close();
 }
 
-// Close the database connection
 $conn->close();
 ?>

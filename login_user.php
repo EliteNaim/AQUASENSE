@@ -1,49 +1,59 @@
 <?php
+session_start(); // Start session
+
 // Database connection details
-$servername = "localhost"; // Replace with your MySQL server details
-$username = "root";        // Replace with your MySQL username
-$password = "";            // Replace with your MySQL password
-$dbname = "Aquasense";     // Replace with your database name
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "Aquasense";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
+// Check database connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Check if the form is submitted
+// Handle POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the form input
-    $mobile = $_POST['mobile'];
+    $mobile = trim($_POST['mobile']);
     $password = $_POST['password'];
 
-    // Query to check if the user exists
-    $stmt = $conn->prepare("SELECT password FROM users WHERE mobile = ?");
+    // Prepare statement
+    $stmt = $conn->prepare("SELECT * FROM users WHERE mobile = ?");
     $stmt->bind_param("s", $mobile);
     $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($hashed_password);
+    $result = $stmt->get_result();
 
-    // If user exists, verify the password
-    if ($stmt->num_rows > 0) {
-        $stmt->fetch();
-        if (password_verify($password, $hashed_password)) {
-            // Redirect to the profile page after successful login
-            header("Location: index.html");
+    // Check user
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+
+        if (password_verify($password, $row['password'])) {
+            // Successful login
+            $_SESSION['name'] = $row['name'];
+            $_SESSION['mobile'] = $row['mobile'];
+            $_SESSION['user_id'] = $row['user_id'];
+            // Success message and redirect
+            echo "<script>
+                    alert('Login Successful! Redirecting to home page...');
+                    window.location.href = 'index.php';
+                  </script>";
             exit();
         } else {
-            echo "Incorrect password!";
+            // Wrong password
+            echo "<script>alert('Wrong credentials!'); window.location.href='login.html';</script>";
+            exit();
         }
     } else {
-        echo "No user found with that mobile number.";
+        // No such mobile number
+        echo "<script>alert('Wrong credentials!'); window.location.href='login.html';</script>";
+        exit();
     }
 
-    // Close the statement
-    $stmt->close();
+    
 }
 
-// Close the connection
 $conn->close();
 ?>
